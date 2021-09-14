@@ -164,7 +164,7 @@ namespace FDSSplitter// Note: actual namespace depends on the project name.
                 MaxDiv[ijk] = (double)Math.Round(MaxDiv[ijk], precision, MidpointRounding.ToEven);//ensures it is rounded
             }
 
-            do//main loop to remesh the domains
+            do  //main loop to remesh the domains
             {
 
                 Counter = Counter + 1;//counter to exit

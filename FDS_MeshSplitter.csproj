@@ -6,4 +6,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="bin\Release\net6.0\publish\win-x86\Box.fds" />
+    <None Include="bin\Release\net6.0\publish\win-x86\Box_48_Meshes.fds" />
+    <None Include="bin\Release\net6.0\publish\win-x86\Box_6_Meshes.fds" />
+    <None Include="bin\Release\net6.0\publish\win-x86\FDS_MeshSplitter .net6 IS included.exe" />
+    <None Include="bin\Release\net6.0\publish\win-x86\FDS_MeshSplitter .net6 NOT included.exe" />
+  </ItemGroup>
+
 </Project>
