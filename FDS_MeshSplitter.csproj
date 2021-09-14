@@ -7,11 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Exe\**" />
+    <EmbeddedResource Remove="Exe\**" />
+    <None Remove="Exe\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Release\net6.0\publish\win-x86\.net6 Included %28large%29\FDS_MeshSplitter.exe" />
     <None Include="bin\Release\net6.0\publish\win-x86\Box.fds" />
     <None Include="bin\Release\net6.0\publish\win-x86\Box_48_Meshes.fds" />
     <None Include="bin\Release\net6.0\publish\win-x86\Box_6_Meshes.fds" />
-    <None Include="bin\Release\net6.0\publish\win-x86\FDS_MeshSplitter .net6 IS included.exe" />
-    <None Include="bin\Release\net6.0\publish\win-x86\FDS_MeshSplitter .net6 NOT included.exe" />
+    <None Include="bin\Release\net6.0\publish\win-x86\FDS_MeshSplitter.exe" />
   </ItemGroup>
 
 </Project>

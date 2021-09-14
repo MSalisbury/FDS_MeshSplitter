@@ -9,14 +9,14 @@ namespace FDSSplitter// Note: actual namespace depends on the project name.
     public class Program
     {
         private static string FDS_text = ""; //Text to use
-        private static int MeshPoisition = 0; //Position of first mesh to add new meshes back to
-        private static int precision = 3; //Precision to use for rounding.  This is mm.
+        private static int MeshPosition; //Position of first mesh to add new meshes back to
+        private static readonly int precision = 3; //Precision to use for rounding.  This is mm.
 
         public static void Main(string[] args)
         {
 
-            string FileAddress = @AppDomain.CurrentDomain.BaseDirectory;
-            int Meshes = 0;
+            string FileAddress; 
+            int Meshes;
 
             switch (args.Length)
             {
@@ -92,7 +92,7 @@ namespace FDSSplitter// Note: actual namespace depends on the project name.
 
                     if (MeshFound == false)
                     {
-                        MeshPoisition = sb.Length;//Record position of first mesh
+                        MeshPosition = sb.Length;//Record position of first mesh
                         MeshFound = true;
                     }
 
@@ -152,7 +152,7 @@ namespace FDSSplitter// Note: actual namespace depends on the project name.
                     if (div > MaxDiv[ijk])
                     {   // get the offset for this division
                         MaxDiv[ijk] = div;
-                        DivOffset[ijk] = (double)Math.Round(mesh.XB[ijk * 2]- snap(mesh.XB[ijk * 2], MaxDiv[ijk]), precision, MidpointRounding.ToEven);// gets the difference between snapped and actual grid size for offsets
+                        DivOffset[ijk] = (double)Math.Round(mesh.XB[ijk * 2]- Snap(mesh.XB[ijk * 2], MaxDiv[ijk]), precision, MidpointRounding.ToEven);// gets the difference between snapped and actual grid size for offsets
                     }
                 }
             }
@@ -167,7 +167,7 @@ namespace FDSSplitter// Note: actual namespace depends on the project name.
             do  //main loop to remesh the domains
             {
 
-                Counter = Counter + 1;//counter to exit
+                Counter++;//counter to exit
 
                 // sort by largest number of cells
                 newMeshes = newMeshes.OrderByDescending(Mesh => Mesh.Cells).ToList();
@@ -201,7 +201,7 @@ namespace FDSSplitter// Note: actual namespace depends on the project name.
                 Factor = Math.Min(6,Math.Max(2,(int)(LM.Cells / IdealCellsPerMesh / 2)));// sets up the devision to address very large cells needing multiple divisions max between 2 and 6
 
                 // Snaps to largest grid size in domain, factored based on how big the cell is distance of a to b
-                NewDim = (double)Math.Round(snap(a, b, MaxDiv[ijk], Factor ) + DivOffset[ijk], precision, MidpointRounding.ToEven);
+                NewDim = (double)Math.Round(Snap(a, b, MaxDiv[ijk], Factor ) + DivOffset[ijk], precision, MidpointRounding.ToEven);
                 Div = (double)((LM.XB[ijk * 2 + 1] - LM.XB[ijk * 2 + 0]) / LM.IJK[ijk]);//Cell Size (division in X direction)
 
                 newIJK_a = (int)(Math.Round((NewDim - a) / Div, 0, MidpointRounding.ToEven));//Number of dividers for new mesh
@@ -238,7 +238,7 @@ namespace FDSSplitter// Note: actual namespace depends on the project name.
 
 
             // Parse new meshes to strings
-            List<string> SplitMesh = new List<string>();
+            List<string> SplitMesh = new();
             int MeshCount = 0;
             foreach (Mesh aMesh in newMeshes)
             {
@@ -254,7 +254,7 @@ namespace FDSSplitter// Note: actual namespace depends on the project name.
         }
 
         //Snaps to nearest half grid
-        private static double snap(double a, double b, double div, int Factor)
+        private static double Snap(double a, double b, double div, int Factor)
         {
 
             return (double)Math.Round((a + ((b - a) / Factor)) / div, 0, MidpointRounding.AwayFromZero) * div;
@@ -262,7 +262,7 @@ namespace FDSSplitter// Note: actual namespace depends on the project name.
         }
 
         // Snaps to nearest division
-        private static double snap(double a, double div)
+        private static double Snap(double a, double div)
         {
 
             return (double)Math.Round(a / div, 0, MidpointRounding.AwayFromZero) * div;
@@ -288,7 +288,7 @@ namespace FDSSplitter// Note: actual namespace depends on the project name.
 
 
             // Insert meshes back into FDS text
-            FDS_text = FDS_text.Insert(MeshPoisition, sb.ToString());
+            FDS_text = FDS_text.Insert(MeshPosition, sb.ToString());
 
             // save to disc
             File.WriteAllText(FileAddress, FDS_text.ToString());
@@ -346,7 +346,7 @@ namespace FDSSplitter// Note: actual namespace depends on the project name.
                     // This simply tries to catch all the different ways FDS can read the input file:).  If there is a better way please send on FDS 'reader' logic.
                     if (trimed.StartsWith("IJK"))
                     {
-                        if (Parts[i].Split('=').Count() > 1)
+                        if (Parts[i].Split('=').Length > 1)
                         {
                             IJK[0] = long.Parse(Parts[i].Split('=')[1]);
                             IJK[1] = long.Parse(Parts[i + 1]);
@@ -364,7 +364,7 @@ namespace FDSSplitter// Note: actual namespace depends on the project name.
                     else if (trimed.StartsWith("XB"))
                     {
 
-                        if (Parts[i].Split('=').Count() > 1)
+                        if (Parts[i].Split('=').Length > 1)
                         {
                             XB[0] = double.Parse(Parts[i].Split('=')[1]);// take 2nd part of XB after =
                             XB[1] = double.Parse(Parts[i + 1]);
